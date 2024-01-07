@@ -61,7 +61,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "axum-forward-header"
+name = "axum-forwarded-header"
 version = "0.1.0"
 dependencies = [
  "axum",

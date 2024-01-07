@@ -1,5 +1,5 @@
 [package]
-name = "axum-forward-header"
+name = "axum-forwarded-header"
 version = "0.1.0"
 edition = "2021"
 description = "Parser for the 'Forwarded' HTTP header"
@@ -7,8 +7,8 @@ description = "Parser for the 'Forwarded' HTTP header"
 authors = ["James Hodgkinson <james@terminaloutcomes.com>"]
 rust-version = "1.66"
 license = "MPL-2.0"
-homepage = "https://github.com/yaleman/axum_forward_header/"
-repository = "https://github.com/yaleman/axum_forward_header/"
+homepage = "https://github.com/yaleman/axum_forwarded_header/"
+repository = "https://github.com/yaleman/axum_forwarded_header/"
 readme = "README.md"
 
 keywords = ["http", "headers", "parser", "axum", "web"]
