@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use axum::http::HeaderValue;
-use axum_forward_header::ForwardedHeader;
+use axum_forwarded_header::ForwardedHeader;
 
 #[test]
 fn test_parse_forwarded_header_with_for_field() {
