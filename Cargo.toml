@@ -15,4 +15,4 @@ keywords = ["http", "headers", "parser", "axum", "web"]
 categories = ["web-programming::http-server"]
 
 [dependencies]
-axum = { version = "^0.7.6", default-features = false }
+axum = { version = "^0.7.7", default-features = false }
