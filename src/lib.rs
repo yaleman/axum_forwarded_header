@@ -1,12 +1,29 @@
 use axum::http::HeaderValue;
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum HttpProto {
+    Http,
+    Https,
+}
+
+impl TryFrom<&str> for HttpProto {
+    type Error = String;
+    fn try_from(proto: &str) -> Result<HttpProto, String> {
+        match proto.to_lowercase().as_str() {
+            "http" => Ok(HttpProto::Http),
+            "https" => Ok(HttpProto::Https),
+            _ => Err(format!("Invalid protocol: {}", proto)),
+        }
+    }
+}
+
 /// Fields from a "Forwarded" header per [RFC7239 sec 4](https://www.rfc-editor.org/rfc/rfc7239#section-4)
 #[derive(Debug)]
 pub struct ForwardedHeader {
     pub for_field: Vec<String>,
     pub by: Option<String>,
     pub host: Option<String>,
-    pub proto: Option<String>,
+    pub proto: Option<HttpProto>,
 }
 
 impl ForwardedHeader {
@@ -48,14 +65,17 @@ impl TryFrom<&HeaderValue> for ForwardedHeader {
         let mut for_field: Vec<String> = Vec::new();
         let mut by: Option<String> = None;
         let mut host: Option<String> = None;
-        let mut proto: Option<String> = None;
+        let mut proto: Option<HttpProto> = None;
         // first get the k=v pairs
         forwarded
             .to_str()
             .map_err(|err| err.to_string())?
             .split(';')
             .for_each(|s| {
-                let s = s.trim().to_lowercase();
+                let mut s = s.trim().to_lowercase();
+                while s.contains(' ') {
+                    s = s.replace(" ", "");
+                }
                 // The for value can look like this:
                 // for=192.0.2.43, for=198.51.100.17
                 // so we need to handle this case
@@ -73,7 +93,10 @@ impl TryFrom<&HeaderValue> for ForwardedHeader {
                 } else if s.starts_with("host=") {
                     host = s.split('=').next_back().map(|c| c.to_string());
                 } else if s.starts_with("proto=") {
-                    proto = s.split('=').next_back().map(|c| c.to_string());
+                    proto = s
+                        .split('=')
+                        .next_back()
+                        .map(|c| HttpProto::try_from(c).unwrap_or(HttpProto::Http));
                 } else {
                     // probably need to work out what to do here
                 }

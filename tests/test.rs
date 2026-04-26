@@ -31,7 +31,7 @@ fn test_parse_forwarded_header_with_for_field() {
     )
     .expect("Failed to parse input");
     assert_eq!(test_res.for_field, vec!["192.0.2.60".to_string()]);
-    assert_eq!(test_res.proto, Some("http".to_string()));
+    assert_eq!(test_res.proto, Some(axum_forwarded_header::HttpProto::Http));
     assert_eq!(
         ForwardedHeader::try_from(
             HeaderValue::from_str("for=192.0.2.43, for=198.51.100.17").unwrap()
