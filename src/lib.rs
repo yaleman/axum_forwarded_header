@@ -20,7 +20,7 @@ impl ForwardedHeader {
                     ip.split(']')
                         .next()?
                         .split('[')
-                        .last()?
+                        .next_back()?
                         .parse::<std::net::IpAddr>()
                         .ok()
                 } else {
@@ -63,15 +63,17 @@ impl TryFrom<&HeaderValue> for ForwardedHeader {
                     // we have a valid thing to grab
                     let chunks: Vec<String> = s
                         .split(',')
-                        .filter_map(|chunk| chunk.trim().split('=').last().map(|c| c.to_string()))
+                        .filter_map(|chunk| {
+                            chunk.trim().split('=').next_back().map(|c| c.to_string())
+                        })
                         .collect::<Vec<String>>();
                     for_field.extend(chunks);
                 } else if s.starts_with("by=") {
-                    by = s.split('=').last().map(|c| c.to_string());
+                    by = s.split('=').next_back().map(|c| c.to_string());
                 } else if s.starts_with("host=") {
-                    host = s.split('=').last().map(|c| c.to_string());
+                    host = s.split('=').next_back().map(|c| c.to_string());
                 } else if s.starts_with("proto=") {
-                    proto = s.split('=').last().map(|c| c.to_string());
+                    proto = s.split('=').next_back().map(|c| c.to_string());
                 } else {
                     // probably need to work out what to do here
                 }
